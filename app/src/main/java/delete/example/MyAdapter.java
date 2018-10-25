@@ -2,11 +2,15 @@ package delete.example;
 
 import java.util.List;
 
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
@@ -19,6 +23,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         // each data item is just a string in this case
         public TextView txtHeader;
         public TextView txtFooter;
+        public ImageView newTrack;
+        public Button buttonNewTrack;
         public View layout;
 
         public ViewHolder(View v) {
@@ -26,8 +32,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             layout = v;
             txtHeader = (TextView) v.findViewById(R.id.firstLine);
             txtFooter = (TextView) v.findViewById(R.id.secondLine);
+            newTrack = (ImageView) v.findViewById(R.id.imageView1);
+            buttonNewTrack = (Button) v.findViewById(R.id.button);
+
+
         }
     }
+
 
     public void add(int position, Track tr) {
         values.add(position, tr);
@@ -78,6 +89,24 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 }
             }
         });
+
+
+
+
+
+
+        /*holder.newTrack.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NewTrackDialog dialog = new NewTrackDialog();
+
+
+                //dialog.show(getSupportFragmentManager, "credLOG");
+            }
+        });
+
+*/
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)

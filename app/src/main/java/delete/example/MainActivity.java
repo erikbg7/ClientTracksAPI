@@ -2,11 +2,14 @@ package delete.example;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.View;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -18,7 +21,7 @@ import java.util.List;
 
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
     private final String BaseURL = "http://147.83.7.155:8080/dsaApp/";
 
@@ -71,6 +74,14 @@ public class MainActivity extends Activity {
     }
 
 
+
+
+    public void onButton1Clicked(View view){
+        DialogFragment df = new NewTrackDialog();
+        df.show(getSupportFragmentManager(), "dialog");
+    }
+
+
     private void iniciarControles(){
         recyclerView = findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -78,8 +89,8 @@ public class MainActivity extends Activity {
         recyclerView.setLayoutManager(layoutManager);
 
         // put this after your definition of your recyclerview
-// input in your data mode in this example a java.util.List, adjust if necessary
-// adapter is your adapter
+        // input in your data mode in this example a java.util.List, adjust if necessary
+        // adapter is your adapter
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
                 new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
                     @Override
