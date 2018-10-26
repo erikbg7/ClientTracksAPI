@@ -18,6 +18,12 @@ public class Track {
     @Expose
     private String title;
 
+    public Track(Integer id, String singer, String title) {
+        this.id = id;
+        this.singer = singer;
+        this.title = title;
+    }
+
     public Integer getId() {
         return id;
     }

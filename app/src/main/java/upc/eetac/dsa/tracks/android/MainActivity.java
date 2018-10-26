@@ -29,19 +29,19 @@ public class MainActivity extends AppCompatActivity implements NewTrkDialog.OnDi
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
+    private TrackAPI trackAPI;
 
     private List<Track> trackList = new ArrayList<>();
-    private List<String> input = new ArrayList<>();
 
+    //EVENTO del button del dialogo para confirmar la creación de un track
     @Override
-    public void OnPositiveButtonClicked() {
+    public void OnPositiveButtonClicked(String singer, String title) {
 
+        Integer id = mAdapter.getItemCount();
+        Track newTrack = new Track(id, singer, title);
+        createNewTrack(newTrack);
     }
 
-    @Override
-    public void OnNegativeButtonClicked() {
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,44 +53,17 @@ public class MainActivity extends AppCompatActivity implements NewTrkDialog.OnDi
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        TrackAPI trackAPI = retrofit.create(TrackAPI.class);
-        Call<List<Track>> callTrackList = trackAPI.getTracks();
-        callTrackList.enqueue(new Callback<List<Track>>() {
-            @Override
-            public void onResponse(Call<List<Track>> call, Response<List<Track>> response) {
-                if(response.isSuccessful()){
-                    trackList = response.body();
-                    Log.d("QuestionsCallback", "//////////////////////////////////  SUCCES!:  we have  " +trackList.size() + "  tracks  ///////////////////////////////");
+        trackAPI = retrofit.create(TrackAPI.class);
 
-                    for (int i = 0; i < trackList.size(); i++){
-                        Log.d("QuestionsCallback", "//////////////////////////////////  Nombre del cantante 3:" +trackList.get(i).getSinger()+ "///////////////////////////////");
-                    }
-                    iniciarControles();
-                    mAdapter = new MyAdapter(trackList);
-                    recyclerView.setAdapter(mAdapter);
-                }
-                else
-                    Log.d("QuestionsCallback", "////////////////////////////////////   ERROR   /////////////////////////////////////");
-            }
+        actualizarTracks();
 
-            @Override
-            public void onFailure(Call<List<Track>> call, Throwable t) {
-                Log.d("QuestionsCallback", "////////////////////////////////////////   ERROR  /////////////////////////////////");
-                t.printStackTrace();
-            }
-        });
+
 
     }
 
 
 
-    // Acción del button para abrir un dialogo, permite añadir un nuevo track
-    public void onButton1Clicked(View view){
-        DialogFragment df = new NewTrkDialog();
-        df.show(getSupportFragmentManager(), "dialog");
-    }
-
-
+    // INICIA el recyclerview y permite borrar del recycler los elementos con un SWAP
     private void iniciarControles(){
         recyclerView = findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -119,5 +92,63 @@ public class MainActivity extends AppCompatActivity implements NewTrkDialog.OnDi
 
     }
 
+    // CALL para pedir la lista de tracks al servidor
+    private void actualizarTracks(){
+        Call<List<Track>> callTrackList = trackAPI.getTracks();
+        callTrackList.enqueue(new Callback<List<Track>>() {
+            @Override
+            public void onResponse(Call<List<Track>> call, Response<List<Track>> response) {
+                if(response.isSuccessful()){
+                    trackList = response.body();
+                    Log.d("QuestionsCallback", "//////////////////////////////////  SUCCES!:  we have  " +trackList.size() + "  tracks  ///////////////////////////////");
+
+                    for (int i = 0; i < trackList.size(); i++){
+                        Log.d("QuestionsCallback", "//////////////////////////////////  Nombre del cantante 3:" +trackList.get(i).getSinger()+ "///////////////////////////////");
+                    }
+                    iniciarControles();
+                    mAdapter = new MyAdapter(trackList);
+                    recyclerView.setAdapter(mAdapter);
+                }
+                else
+                    Log.d("QuestionsCallback", "////////////////////////////////////   NO SUCCESFUL RESPONSE   /////////////////////////////////////");
+            }
+
+            @Override
+            public void onFailure(Call<List<Track>> call, Throwable t) {
+                Log.d("QuestionsCallback", "////////////////////////////////////////   ERROR   /////////////////////////////////");
+                t.printStackTrace();
+            }
+        });
+    }
+
+    // EVENTO del button para lanzar un dialogo y añadir un nuevo track
+    public void onNewTrackButtonClicked(View view){
+        DialogFragment df = new NewTrkDialog();
+        df.show(getSupportFragmentManager(), "dialog");
+    }
+
+    // CALL para hacer un POST de un nuevo track
+    private void createNewTrack(Track tr){
+        Call<Track> callNewTrack = trackAPI.createTrack(tr);
+        callNewTrack.enqueue(new Callback<Track>() {
+            @Override
+            public void onResponse(Call<Track> call, Response<Track> response) {
+                if(response.isSuccessful()){
+                    actualizarTracks();
+                    iniciarControles();
+                    mAdapter = new MyAdapter(trackList);
+                    recyclerView.setAdapter(mAdapter);
+                }
+                else
+                    Log.d("QuestionsCallback", "////////////////////////////////////   NO SUCCESFUL RESPONSE   /////////////////////////////////////");
+            }
+
+            @Override
+            public void onFailure(Call<Track> call, Throwable t) {
+                Log.d("QuestionsCallback", "////////////////////////////////////////   ERROR   /////////////////////////////////");
+                t.printStackTrace();
+            }
+        });
+    }
 
 }
