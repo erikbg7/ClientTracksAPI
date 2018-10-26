@@ -12,8 +12,7 @@ public interface TrackAPI {
     @GET("tracks")
     Call<List<Track>> getTracks();
 
-
-    @POST("users")
+    @POST("tracks")
     Call<Track> createTrack(@Body Track track);
 
 }

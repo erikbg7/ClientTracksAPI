@@ -1,6 +1,5 @@
 package upc.eetac.dsa.tracks.android;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +23,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements NewTrkDialog.OnDialogListener {
 
     private final String BaseURL = "http://147.83.7.207:8080/dsaApp/";
-
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -54,13 +52,8 @@ public class MainActivity extends AppCompatActivity implements NewTrkDialog.OnDi
                 .build();
 
         trackAPI = retrofit.create(TrackAPI.class);
-
         actualizarTracks();
-
-
-
     }
-
 
 
     // INICIA el recyclerview y permite borrar del recycler los elementos con un SWAP
@@ -135,7 +128,6 @@ public class MainActivity extends AppCompatActivity implements NewTrkDialog.OnDi
             public void onResponse(Call<Track> call, Response<Track> response) {
                 if(response.isSuccessful()){
                     actualizarTracks();
-                    iniciarControles();
                     mAdapter = new MyAdapter(trackList);
                     recyclerView.setAdapter(mAdapter);
                 }
